@@ -61,10 +61,11 @@ def immoscout24parser(url):
 #we search whole Berlin
 def immosearch():
 
-  immos = {}
-  page = 0
-
-  while True:
+    immos = {}
+    page = 0
+    k = 'Wohnung' # Wohnung oder Haus
+    w = 'Miete' # Miete oder Kauf
+    while True:
       page+=1
       url = 'https://www.immobilienscout24.de/Suche/S-T/P-%s/Wohnung-Miete/Berlin/Berlin' % (page)
 
@@ -127,7 +128,7 @@ def immosearch():
 
       print('Scrape Page %i/%i (%i Immobilien %s %s gefunden)' % (page, numberOfPages, len(immos), k, w))
       #end while
-  print("Scraped %i Immos" % len(immos))
-  df = pd.DataFrame(immos).T
+    print("Scraped %i Immos" % len(immos))
+    df = pd.DataFrame(immos).T
 
-  return df
+    return df
