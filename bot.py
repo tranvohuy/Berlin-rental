@@ -9,13 +9,14 @@ from immo import immosearch
 
 
 from os import environ
-json_creds = environ['google_cred']
-creds_dict = json.loads(json_creds)
+
 
 
 def get_client():
     scopes = ['https://spreadsheets.google.com/feeds',
              'https://www.googleapis.com/auth/drive']
+    json_creds = environ['google_cred']
+    creds_dict = json.loads(json_creds)
     creds_dict["private_key"] = creds_dict["private_key"].replace("\\\\n", "\n")
     creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scopes)
     gc = gspread.authorize(creds)
