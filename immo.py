@@ -102,18 +102,15 @@ def immosearch():
           realEstate['numberOfRooms'] = realEstate_json['numberOfRooms']
           realEstate['livingSpace'] = realEstate_json['livingSpace']
 
-          if k=='Wohnung':
-              realEstate['balcony'] = realEstate_json['balcony']
-              realEstate['builtInKitchen'] = realEstate_json['builtInKitchen']
-              realEstate['garden'] = realEstate_json['garden']
-              realEstate['price'] = realEstate_json['price']['value']
-              realEstate['privateOffer'] = realEstate_json['privateOffer']
-          elif k=='Haus':
-              realEstate['isBarrierFree'] = realEstate_json['isBarrierFree']
-              realEstate['cellar'] = realEstate_json['cellar']
-              realEstate['plotArea'] = realEstate_json['plotArea']
-              realEstate['price'] = realEstate_json['price']['value']
-              realEstate['privateOffer'] = realEstate_json['privateOffer']
+          realEstate['numberOfRooms'] = realEstate_json['numberOfRooms']
+          realEstate['livingSpace'] = realEstate_json['livingSpace']
+          realEstate['price'] = realEstate_json['price']['value']
+          realEstate['warmprice'] = realEstate_json['calculatedPrice']['value']
+          
+            realEstate['privateOffer'] = realEstate_json['privateOffer']
+          realEstate['balcony'] = realEstate_json['balcony']
+          realEstate['builtInKitchen'] = realEstate_json['builtInKitchen']
+          realEstate['garden'] = realEstate_json['garden']
 
           realEstate['floorplan'] = realEstate_json['floorplan']
           realEstate['from'] = realEstate_json['companyWideCustomerId']
