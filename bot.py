@@ -11,6 +11,13 @@ from immo import immosearch
 from os import environ
 
 
+# We set up Heroku Scheduler daily (there is no weekly). 
+# Hence to do the work weekly, we should have a trick.
+# If today is not a Friday, exit the script, do nothing else.
+if date.today().weekday()!=4:
+    print('Today is ndot Friday. No search!')
+    exit()
+
 
 def get_client():
     scopes = ['https://spreadsheets.google.com/feeds',
