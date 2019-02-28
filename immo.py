@@ -87,11 +87,7 @@ def immosearch():
 
           realEstate = {}
 
-          realEstate[u'Miete/Kauf'] = w
-          realEstate[u'Haus/Wohnung'] = k
-
           realEstate['address'] = realEstate_json['address']['description']['text']
-          realEstate['city'] = realEstate_json['address']['city']
           realEstate['postcode'] = realEstate_json['address']['postcode']
           realEstate['quarter'] = realEstate_json['address']['quarter']
           try:
@@ -130,5 +126,6 @@ def immosearch():
       #end while
     print("Scraped %i Immos" % len(immos))
     df = pd.DataFrame(immos).T
+    df.index.name = 'ID'
 
     return df
