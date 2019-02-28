@@ -107,7 +107,7 @@ def immosearch():
           realEstate['price'] = realEstate_json['price']['value']
           realEstate['warmprice'] = realEstate_json['calculatedPrice']['value']
           
-            realEstate['privateOffer'] = realEstate_json['privateOffer']
+          realEstate['privateOffer'] = realEstate_json['privateOffer']
           realEstate['balcony'] = realEstate_json['balcony']
           realEstate['builtInKitchen'] = realEstate_json['builtInKitchen']
           realEstate['garden'] = realEstate_json['garden']
