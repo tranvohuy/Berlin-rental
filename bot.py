@@ -10,7 +10,9 @@ from immo import immosearch
 
 from os import environ
 
-#if today is not a Friday, exit the script, do nothing else.
+# We set up Heroku Scheduler daily (there is no weekly). 
+# Hence to do the work weekly, we should have a trick.
+# If today is not a Friday, exit the script, do nothing else.
 if date.today().weekday()!=4:
     print('Today is not Friday. No search!')
     exit()
