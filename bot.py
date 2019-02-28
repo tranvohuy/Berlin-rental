@@ -12,6 +12,7 @@ from os import environ
 
 #if today is not a Friday, exit the script, do nothing else.
 if date.today().weekday()!=4:
+    print('Today is not Friday. No search!')
     exit()
 
 
