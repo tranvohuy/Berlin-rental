@@ -114,7 +114,16 @@ def immosearch():
           realEstate['from'] = realEstate_json['companyWideCustomerId']
           realEstate['ID'] = realEstate_json[u'@id']
           realEstate['url'] = u'https://www.immobilienscout24.de/expose/%s' % realEstate['ID']
+          
+          realEstate['modification'] = resultlistEntry[u'@modification']
+          realEstate['creation'] = resultlistEntry[u'@creation']
+          realEstate['publishDate'] = resultlistEntry[u'@publishDate']
 
+          realEstate['contact'] = " ".join([value for key, value in realEstate_json['contactDetails'].items() if key in  {'firstname', 'lastname', 'phoneNumber'}])
+          if realEstate['privateOffer'] == 'false':
+            realEstate['realtorCompanyName'] = realEstate_json['realtorCompanyName']
+          else:
+            realEstate['realtorCompanyName'] = 'private'
           immos[realEstate['ID']] = realEstate
 
       print('Scrape Page %i/%i (%i Immobilien %s %s gefunden)' % (page, numberOfPages, len(immos), k, w))
