@@ -79,7 +79,7 @@ def make_table(df):
     #force these columns values to numeric, not string
     df_quarter[['price', 'warmprice']] = df_quarter[['price','warmprice']].apply(pd.to_numeric, errors='coerce', axis=1)
 
-    df_summary = df_quarter[['Rooms', 'distric', 'price', 'warmprice']].groupby(['district', 'Rooms'], as_index=False).mean()
+    df_summary = df_quarter[['Rooms', 'district', 'price', 'warmprice']].groupby(['district', 'Rooms'], as_index=False).mean()
     cols = ['#rooms<2', '2', '2.5', '3', '>3']
     df_summary_new = pd.DataFrame(columns= cols, index = impt_quarters)
     for index, row in df_summary.iterrows():
