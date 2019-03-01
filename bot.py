@@ -110,7 +110,7 @@ if __name__=='__main__':
     
 #---------------
 #for testing
-    wks = gc.open('Berlin-rental').get_worksheet(2)
+    wks = gc.open('Berlin-rental').get_worksheet(3)
     df = gsdf.get_as_dataframe(wks)
 #--------------
     file_table = 'table.png'
