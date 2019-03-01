@@ -6,8 +6,8 @@ from oauth2client.service_account import ServiceAccountCredentials
 import gspread_dataframe as gsdf
 
 from immo import immosearch
-
-
+import matplotlib.pyplot as plt
+from pandas.plotting import table
 from os import environ
 
 
@@ -30,17 +30,85 @@ def get_client():
     return gc
     
 
+def update_tweet(file_table):
+   
+    consumer_key= environ['consumer_key']
+    consumer_secret = environ['consumer_secret']
+    access_key = environ['access_key']
+    access_secret = environ['access_secret']
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_key, access_secret)
+    api = tweepy.API(auth)
+    
+    api.update_with_media(file_table, status = 'Avg cold/warm rents with numbers of rooms in some districts in Berlin') 
 
 
+    
+ def group_rooms(n):
+      if n<2:
+        return '#rooms<2'
+      if n==2:
+        return '2'
+      if n<3:
+        return '2.5'
+      if n==3:
+        return '3'
+      if n>3:
+        return '>3'
+
+      
+def make_table(df):
+   
+    impt_quarters=['Wilmersdorf (Wilmersdorf)', 'Schmargendorf (Wilmersdorf)', 'Grunewald (Wilmersdorf)', 
+                   'Charlottenburg (Charlottenburg)',
+                   'Mitte (Mitte)' , 'Wedding (Wedding)', 
+                   'Tiergarten (Tiergarten)',
+                   'Siemensstadt (Spandau)', 
+                   'Haselhorst (Spandau)',    'Spandau (Spandau)', 
+                   'Zehlendorf (Zehlendorf)', 'Wannsee (Zehlendorf)',
+                   'Nikolassee (Zehlendorf)', 'Steglitz (Steglitz)',
+                   'Prenzlauer Berg (Prenzlauer Berg)', 'Friedrichshain (Friedrichshain)'  ]
+
+    df_quarter = df[df['quarter'].isin(impt_quarters)]
+    df_quarter.rename(columns = {'quarter':'district'}, inplace = True)
+
+    newcolumn = df_quarter['numberOfRooms'].apply(group_rooms)
+    df_quarter = df_quarter.assign(Rooms=newcolumn) 
+
+
+    df_summary = df_quarter[["Rooms", 'district', "price", 'warmprice']].groupby(['district', 'Rooms'], as_index=False).mean()
+    cols = ['#rooms<2', '2', '2.5', '3', '>3']
+    df_summary_new = pd.DataFrame(columns= cols, index = impt_quarters)
+    for index, row in df_summary.iterrows():
+      df_summary_new.loc[row['district'], row['Rooms']] = '%.1f€/%.1f€' %(row['price'],row['warmprice'])
+
+
+    fig, ax = plt.subplots(figsize=(15, 7)) # set size frame
+    plt.title(timestamp)
+    ax.xaxis.set_visible(False)  # hide the x axis
+    ax.yaxis.set_visible(False)  # hide the y axis
+    ax.set_frame_on(False)  # no visible frame, uncomment if size is ok
+    tabla = table(ax, df_summary_new, loc='upper right', colWidths=[0.08]*len(df_summary_new.columns))  # where df is your data frame
+    tabla.auto_set_font_size(False) # Activate set fontsize manually
+    tabla.set_fontsize(13) # if ++fontsize is necessary ++colWidths
+    tabla.scale(2, 2) # change size table
+
+    plt.savefig(file_table, transparent=True)
+   
 
 if __name__=='__main__':
-    gc = get_client()
-    sh = gc.open('Berlin-rental')
     timestamp = datetime.strftime(datetime.now(), '%Y-%m-%d')
-    #check whether to do the search or not
-    #if yes, then proceed
-    
-    df = immosearch()
 
-    wks = sh.add_worksheet(title = timestamp, rows = df.shape[0], cols = df.shape[1])
-    gsdf.set_with_dataframe(wks, df)
+    gc = get_client()
+#    sh = gc.open('Berlin-rental')
+    
+#    df = immosearch()
+
+#    wks = sh.add_worksheet(title = timestamp, rows = df.shape[0], cols = df.shape[1])
+#    gsdf.set_with_dataframe(wks, df)
+    wks = gc.open('Berlin-rental').get_worksheet(2)
+
+    df = gsdf.get_as_dataframe(wks)
+    file_table = 'table.png'
+    make_table(df)
+    update_tweet(file_table)
