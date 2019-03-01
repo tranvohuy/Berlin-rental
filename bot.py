@@ -8,6 +8,7 @@ import gspread_dataframe as gsdf
 from immo import immosearch
 import matplotlib.pyplot as plt
 from pandas.plotting import table
+import pandas as pd
 from os import environ
 
 
