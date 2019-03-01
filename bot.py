@@ -77,7 +77,7 @@ def make_table(df):
     df_quarter = df_quarter.assign(Rooms=newcolumn) 
 
     #force these columns values to numeric, not string
-    df_quarter['price', 'warmprice'] = df_quarter['price','warmprice'].apply(pd.to_numeric, errors='coerce', axis=1)
+    df_quarter[['price', 'warmprice']] = df_quarter[['price','warmprice']].apply(pd.to_numeric, errors='coerce', axis=1)
 
     df_summary = df_quarter[['Rooms', 'distric', 'price', 'warmprice']].groupby(['district', 'Rooms'], as_index=False).mean()
     cols = ['#rooms<2', '2', '2.5', '3', '>3']
@@ -105,15 +105,15 @@ if __name__=='__main__':
     gc = get_client()
     
     
-    sh = gc.open('Berlin-rental')
-    df = immosearch()
-    wks = sh.add_worksheet(title = timestamp, rows = df.shape[0], cols = df.shape[1])
-    gsdf.set_with_dataframe(wks, df)
+#    sh = gc.open('Berlin-rental')
+#    df = immosearch()
+#    wks = sh.add_worksheet(title = timestamp, rows = df.shape[0], cols = df.shape[1])
+#    gsdf.set_with_dataframe(wks, df)
     
 #---------------
 #for testing
-#    wks = gc.open('Berlin-rental').get_worksheet(3)
-#    df = gsdf.get_as_dataframe(wks)
+    wks = gc.open('Berlin-rental').get_worksheet(3)
+    df = gsdf.get_as_dataframe(wks)
 #--------------
     file_table = 'table.png'
     make_table(df)
