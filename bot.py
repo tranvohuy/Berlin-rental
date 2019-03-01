@@ -101,15 +101,18 @@ if __name__=='__main__':
     timestamp = datetime.strftime(datetime.now(), '%Y-%m-%d')
 
     gc = get_client()
-#    sh = gc.open('Berlin-rental')
+    sh = gc.open('Berlin-rental')
     
-#    df = immosearch()
+    df = immosearch()
 
-#    wks = sh.add_worksheet(title = timestamp, rows = df.shape[0], cols = df.shape[1])
-#    gsdf.set_with_dataframe(wks, df)
-    wks = gc.open('Berlin-rental').get_worksheet(2)
-
-    df = gsdf.get_as_dataframe(wks)
+    wks = sh.add_worksheet(title = timestamp, rows = df.shape[0], cols = df.shape[1])
+    gsdf.set_with_dataframe(wks, df)
+    
+#---------------
+#for testing
+#    wks = gc.open('Berlin-rental').get_worksheet(2)
+#    df = gsdf.get_as_dataframe(wks)
+#--------------
     file_table = 'table.png'
     make_table(df)
     update_tweet(file_table)
