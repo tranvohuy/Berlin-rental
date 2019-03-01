@@ -44,19 +44,19 @@ def update_tweet(file_table):
 
 
     
- def group_rooms(n):
-      if n<2:
+def group_rooms(n):
+    if n<2:
         return '#rooms<2'
-      if n==2:
+    if n==2:
         return '2'
-      if n<3:
+    if n<3:
         return '2.5'
-      if n==3:
+    if n==3:
         return '3'
-      if n>3:
+    if n>3:
         return '>3'
 
-      
+
 def make_table(df):
    
     impt_quarters=['Wilmersdorf (Wilmersdorf)', 'Schmargendorf (Wilmersdorf)', 'Grunewald (Wilmersdorf)', 
