@@ -41,7 +41,7 @@ def update_tweet(file_table):
     auth.set_access_token(access_key, access_secret)
     api = tweepy.API(auth)
     
-    api.update_with_media(file_table, status = 'Avg cold/warm rents with numbers of rooms in some districts in Berlin') 
+    api.update_with_media(file_table, status = 'Avg cold/warm rents in some districts in Berlin, according to rental ads in Immobilienscout24') 
 
 
     
