@@ -87,7 +87,7 @@ def make_table(df):
 
 
     fig, ax = plt.subplots(figsize=(15, 7)) # set size frame
-    plt.title(timestamp)
+    plt.title(timestamp+u':average cold/warm rent')
     ax.xaxis.set_visible(False)  # hide the x axis
     ax.yaxis.set_visible(False)  # hide the y axis
     ax.set_frame_on(False)  # no visible frame, uncomment if size is ok
