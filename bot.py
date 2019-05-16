@@ -15,8 +15,10 @@ from os import environ
 # We set up Heroku Scheduler daily (there is no weekly). 
 # Hence to do the work weekly, we should have a trick.
 # If today is not a Friday, exit the script, do nothing else.
-if date.today().weekday()!=4:
-    print('Today is not Friday. No search!')
+# 4: Friday
+# 1: Tuesday
+if date.today().weekday() not in [1,4]:
+    print('Today is not Friday nor Tuesday. No search!')
     exit()
 
 
