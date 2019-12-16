@@ -1,14 +1,12 @@
 from bs4 import BeautifulSoup
 import json
 import urllib.request as urllib2
-import random
-from random import choice
+from random import choice, randint
 import pandas as pd
-import time
 
 def urlquery(url):
     try:
-        sleeptime = float(random.randint(1,6))/5
+        sleeptime = float(randint(1,6))/5
         time.sleep(sleeptime)
 
         agents = ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17',
@@ -30,7 +28,7 @@ def urlquery(url):
         return html
 
     except Exception as e:
-        print('Something went wrong with Crawling:\n%s' % e)
+        print(f'Something went wrong with Crawling:\n%{e}')
 
 
 def immoscout24parser(url):
@@ -59,37 +57,49 @@ def immoscout24parser(url):
         print("Fehler in immoscout24 parser: %s" % e)
 
 #we search whole Berlin
-def immosearch():
+def immosearch(haus_type = 'haus', buying_type='Kauf') -> pd.DataFrame:
+    """
+    haus_type: 'haus', 'wohnung'
+    buying_type: 'Kauf', 'Miete'. For real estate, buying_type should be 'Kauf
+    """
 
+    # a dictionary stores all ads
     immos = {}
     page = 0
-    k = 'Wohnung' # Wohnung oder Haus
-    w = 'Miete' # Miete oder Kauf
     while True:
       page+=1
-      url = 'https://www.immobilienscout24.de/Suche/S-T/P-%s/Wohnung-Miete/Berlin/Berlin' % (page)
-
+      url = f"https://www.immobilienscout24.de/Suche/de/berlin/berlin/{haus_type}-kaufen?pagenumber={page}"
+      print(f"Searching {url}")
       resultlist_json = None
       while resultlist_json is None:
           try:
               resultlist_json = immoscout24parser(url)
-              numberOfPages = int(resultlist_json[u'paging'][u'numberOfPages'])
+              number_of_pages = int(resultlist_json[u'paging'][u'numberOfPages'])
               pageNumber = int(resultlist_json[u'paging'][u'pageNumber'])
           except:
               pass
-
-      if page>numberOfPages:
+      if page > number_of_pages:
           break
 
       # Get the data
       for resultlistEntry in resultlist_json['resultlistEntries'][0][u'resultlistEntry']:
-          realEstate_json = resultlistEntry[u'resultlist.realEstate']
+          
+          # realEstate will contain all info of an ad, identified by ID
 
           realEstate = {}
+          realEstate['haus_wohnung'] = haus_type
+          realEstate['creation'] = resultlistEntry[u'@creation']
+          realEstate['modification'] = resultlistEntry[u'@modification']
+          realEstate['publishdate'] = resultlistEntry[u'@publishDate']
+          realEstate['realEstateID'] = resultlistEntry[u'realEstateId']
+          
+          realEstate_json = resultlistEntry[u'resultlist.realEstate']
 
+          realEstate['title'] = realEstate_json['title']
           realEstate['address'] = realEstate_json['address']['description']['text']
           realEstate['postcode'] = realEstate_json['address']['postcode']
           realEstate['quarter'] = realEstate_json['address']['quarter']
+
           try:
               realEstate['lat'] = realEstate_json['address'][u'wgs84Coordinate']['latitude']
               realEstate['lon'] = realEstate_json['address'][u'wgs84Coordinate']['longitude']
@@ -97,39 +107,37 @@ def immosearch():
               realEstate['lat'] = None
               realEstate['lon'] = None
 
-          realEstate['title'] = realEstate_json['title']
-
-          realEstate['numberOfRooms'] = realEstate_json['numberOfRooms']
-          realEstate['livingSpace'] = realEstate_json['livingSpace']
-
-          realEstate['price'] = realEstate_json['price']['value']
-          realEstate['warmprice'] = realEstate_json['calculatedPrice']['value']
           
-          realEstate['privateOffer'] = realEstate_json['privateOffer']
-          realEstate['balcony'] = realEstate_json['balcony']
-          realEstate['builtInKitchen'] = realEstate_json['builtInKitchen']
-          realEstate['garden'] = realEstate_json['garden']
-
-          realEstate['floorplan'] = realEstate_json['floorplan']
-          realEstate['from'] = realEstate_json['companyWideCustomerId']
+          realEstate['private_offer'] = realEstate_json['privateOffer']
+          realEstate['contact'] = " ".join([value for key, value in realEstate_json['contactDetails'].items() \
+                                if key in  {'firstname', 'lastname', 'phoneNumber'}])
+          if realEstate['private_offer'] == 'false':
+            realEstate['realtor_Comp_name'] = realEstate_json['realtorCompanyName']
+          else:
+            realEstate['realtor_Comp_name'] = 'private'
+          
+          realEstate['price'] = realEstate_json['price']['value']
+          realEstate['num_rooms']  = realEstate_json['numberOfRooms']
+          realEstate['courtage'] = realEstate_json['courtage']['hasCourtage']
+          realEstate['guest_toilet'] = realEstate_json['guestToilet']
+          realEstate['cellar'] = realEstate_json['cellar']
+          
+          realEstate['company_customer_id'] = realEstate_json['companyWideCustomerId']
           realEstate['ID'] = realEstate_json[u'@id']
+
+
           realEstate['url'] = u'https://www.immobilienscout24.de/expose/%s' % realEstate['ID']
           
-          realEstate['modification'] = resultlistEntry[u'@modification']
-          realEstate['creation'] = resultlistEntry[u'@creation']
-          realEstate['publishDate'] = resultlistEntry[u'@publishDate']
+          
 
-          realEstate['contact'] = " ".join([value for key, value in realEstate_json['contactDetails'].items() if key in  {'firstname', 'lastname', 'phoneNumber'}])
-          if realEstate['privateOffer'] == 'false':
-            realEstate['realtorCompanyName'] = realEstate_json['realtorCompanyName']
-          else:
-            realEstate['realtorCompanyName'] = 'private'
           immos[realEstate['ID']] = realEstate
 
-      print('Scrape Page %i/%i (%i Immobilien %s %s gefunden)' % (page, numberOfPages, len(immos), k, w))
+      print(f'Scrape Page {page}/{number_of_pages} ({len(immos)} Immobilien {haus_type} {buying_type} found).')
+      
       #end while
-    print("Scraped %i Immos" % len(immos))
+    print(f"Scraped {len(immos)} Immos")
     df = pd.DataFrame(immos).T
     df.index.name = 'ID'
 
     return df
+  
