@@ -4,8 +4,8 @@ from os import environ
 from datetime import datetime
 import gspread_dataframe as gsdf
 
-# from utils import connect_to_google_sheet, immosearch, workingday
-# from immo import immosearch
+from utils import connect_to_google_sheet, workingday, send_email
+from immo import immosearch
 
 
 if __name__ == '__main__':
