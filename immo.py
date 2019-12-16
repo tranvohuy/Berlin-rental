@@ -3,6 +3,7 @@ import json
 import urllib.request as urllib2
 from random import choice, randint
 import pandas as pd
+import time
 
 def urlquery(url):
     try:
