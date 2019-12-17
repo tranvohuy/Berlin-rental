@@ -78,7 +78,7 @@ def workingday() -> bool:
     num_to_date = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
                    'Saturday', 'Sunday']
 
-    dates_to_crawl = ['Monday', 'Friday']
+    dates_to_crawl = ['Monday']
     weekday = date.today().weekday()
 
     print(f'Today is {num_to_date[weekday]}.')
