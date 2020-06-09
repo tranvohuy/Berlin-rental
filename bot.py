@@ -107,7 +107,7 @@ if __name__=='__main__':
     gc = get_client()
     
     
-    sh = gc.open('Berlin-rental')
+    sh = gc.open('Berlin-rental-2020')
     df = immosearch()
     wks = sh.add_worksheet(title = timestamp, rows = df.shape[0], cols = df.shape[1])
     gsdf.set_with_dataframe(wks, df)
