@@ -6,12 +6,7 @@ from random import choice
 import pandas as pd
 import time
 
-def urlquery(url):
-    try:
-        sleeptime = float(random.randint(1,6))/5
-        time.sleep(sleeptime)
-
-        agents = ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17',
+AGENTS = ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1309.0 Safari/537.17',
         'Mozilla/5.0 (compatible; MSIE 10.6; Windows NT 6.1; Trident/5.0; InfoPath.2; SLCC1; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET CLR 2.0.50727) 3gpp-gba UNTRUSTED/1.0',
         'Opera/12.80 (Windows NT 5.1; U; en) Presto/2.10.289 Version/12.02',
         'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)',
@@ -19,8 +14,14 @@ def urlquery(url):
         'Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3',
         'Mozilla/5.0 (Linux; U; Android 0.5; en-us) AppleWebKit/522+ (KHTML, like Gecko) Safari/419.3',
         'Opera/9.00 (Windows NT 5.1; U; en)']
+def urlquery(url):
+    try:
+        sleeptime = float(random.randint(1,6))/5
+        time.sleep(sleeptime)
 
-        agent = choice(agents)
+        
+
+        agent = choice(AGENTS)
         opener = urllib2.build_opener()
         opener.addheaders = [('User-agent', agent)]
 
